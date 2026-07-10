@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import cors from 'cors'
 import config from "./config";
-import { prisma } from "./lib/prisma";
+import { authRoutes } from "./modules/auth/auth.route";
 
 
 const app: Application = express();
@@ -19,6 +19,13 @@ app.get('/', (req: Request, res: Response) => {
     res.send("GearUp Backend API is running.")
 })
 
-
+app.use('/api/auth', authRoutes);
+// app.use('/api/gear', GearRoutes);
+// app.use('/api/categories', CategoryRoutes);
+// app.use('/api/rentals', RentalRoutes);
+// app.use('/api/payments', PaymentRoutes);
+// app.use('/api/provider', ProviderRoutes);
+// app.use('/api/admin', AdminRoutes);
+// app.use('/api/reviews', ReviewRoutes);
 
 export default app;
