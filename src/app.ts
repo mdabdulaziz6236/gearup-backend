@@ -7,6 +7,7 @@ import { GearRoutes } from "./modules/gear/gear.route";
 import notFound from "./middlewares/notFound";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import { CategoryRoutes } from "./modules/category/category.route";
+import { ProviderRoutes } from "./modules/provider/provider.route";
 
 
 const app: Application = express();
@@ -26,9 +27,9 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/gear', GearRoutes);
 app.use('/api/categories', CategoryRoutes);
+app.use('/api/provider', ProviderRoutes);
 // app.use('/api/rentals', RentalRoutes);
 // app.use('/api/payments', PaymentRoutes);
-// app.use('/api/provider', ProviderRoutes);
 // app.use('/api/admin', AdminRoutes);
 // app.use('/api/reviews', ReviewRoutes);
 

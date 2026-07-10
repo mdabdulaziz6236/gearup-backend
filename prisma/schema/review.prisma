@@ -1,17 +1,17 @@
 model Review {
-    id            String   @id @default(uuid())
-    customerId    String
-    gearId        String
-    rentalOrderId String   @unique
-    rating        Int      @default(1)
-    comment       String?
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+  id            String   @id @default(uuid())
+  customerId    String
+  gearId        String
+  rentalOrderId String   @unique
+  rating        Int      @default(1)
+  comment       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-    // Relations
-    customer    User        @relation("CustomerReviews", fields: [customerId], references: [id])
-    gear        GearItem    @relation(fields: [gearId], references: [id])
-    rentalOrder RentalOrder @relation(fields: [rentalOrderId], references: [id])
+  // Relations
+  customer    User        @relation("CustomerReviews", fields: [customerId], references: [id])
+  gear        GearItem    @relation(fields: [gearId], references: [id])
+  rentalOrder RentalOrder @relation(fields: [rentalOrderId], references: [id])
 
-    @@map("reviews")
+  @@map("reviews")
 }
