@@ -9,7 +9,6 @@ const registerUser = catchAsync(async (req: Request, res: Response, next: NextFu
 
     const payload = req.body
     const user = await authService.registerUserIntoDB(payload)
-console.log(payload)
 
 
     sendResponse(res, {
@@ -49,9 +48,21 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
     });
 });
 
+const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const userProfile = await authService.getMyProfileFromDB(user?.id as string);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Profile retrieved successfully",
+        data: userProfile
+    });
+});
+
 export const authController = {
     loginUser,
     registerUser,
-    // getMyProfile
+    getMyProfile
 }
 

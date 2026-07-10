@@ -26,7 +26,7 @@ export const auth = (...requiredRoles: UserRole[]) => {
         }
 
 
-        const { userId, role } = verifyToken.data as JwtPayload;
+        const { id, role } = verifyToken.data as JwtPayload;
 
 
         if (requiredRoles.length && !requiredRoles.includes(role as UserRole)) {
@@ -35,7 +35,7 @@ export const auth = (...requiredRoles: UserRole[]) => {
 
 
         const user = await prisma.user.findUnique({
-            where: { id: userId }
+            where: { id: id }
         });
 
         if (!user) {
@@ -46,7 +46,6 @@ export const auth = (...requiredRoles: UserRole[]) => {
         if (user.status === 'SUSPENDED') {
             throw new Error("Your account has been suspended. Please contact support.");
         }
-
         req.user = {
             id: user.id,
             fullName: user.fullName,
