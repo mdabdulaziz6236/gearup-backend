@@ -2,29 +2,50 @@ import { prisma } from "../../lib/prisma";
 
 
 
-const getAllGears = async (query: any) => {
-    const { category, brand, minPrice, maxPrice } = query;
+const getAllGears = async (filters: any, options: any) => {
+    const { searchTerm, minPrice, maxPrice, categoryId } = filters;
+    const { page = 1, limit = 10, sortBy = "createdAt", sortOrder = "desc" } = options;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const take = Number(limit);
+
+    const andConditions: any[] = [];
 
 
-    const filter: any = { isAvailable: true };
-
-    if (category) filter.categoryId = category;
-    if (brand) filter.brand = { contains: brand, mode: 'insensitive' };
-
-    if (minPrice || maxPrice) {
-        filter.dailyPrice = {};
-        if (minPrice) filter.dailyPrice.gte = Number(minPrice);
-        if (maxPrice) filter.dailyPrice.lte = Number(maxPrice);
+    if (searchTerm) {
+        andConditions.push({
+            OR: [
+                { title: { contains: searchTerm, mode: 'insensitive' } },
+                { description: { contains: searchTerm, mode: 'insensitive' } }
+            ]
+        });
     }
 
+
+    if (minPrice) andConditions.push({ dailyPrice: { gte: Number(minPrice) } });
+    if (maxPrice) andConditions.push({ dailyPrice: { lte: Number(maxPrice) } });
+    if (categoryId) andConditions.push({ categoryId });
+
+    const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
+
     const result = await prisma.gearItem.findMany({
-        where: filter,
-        include: {
-            category: { select: { name: true } },
-            provider: { select: { fullName: true } }
-        }
+        where: whereConditions,
+        skip,
+        take,
+        orderBy: { [sortBy]: sortOrder },
+        include: { category: true }
     });
-    return result;
+
+    const total = await prisma.gearItem.count({ where: whereConditions });
+
+    return {
+        meta: {
+            page: Number(page),
+            limit: Number(limit),
+            total
+        },
+        data: result
+    };
 };
 
 
