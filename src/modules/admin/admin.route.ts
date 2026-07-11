@@ -13,5 +13,5 @@ router.get('/users', AdminController.getAllUsers);
 router.patch('/users/:id', AdminController.updateUserStatus);
 router.get('/gear', AdminController.getAllGear);
 router.get('/rentals', AdminController.getAllRentals);
-
+router.get('/stats', AdminController.getStats);
 export const AdminRoutes = router;

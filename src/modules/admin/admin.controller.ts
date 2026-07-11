@@ -46,9 +46,21 @@ const getAllRentals = catchAsync(async (req: Request, res: Response, next: NextF
     });
 });
 
+const getStats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AdminService.getSystemStats();
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Admin stats retrieved successfully",
+        data: result
+    });
+});
+
 export const AdminController = {
     getAllUsers,
     updateUserStatus,
     getAllGear,
-    getAllRentals
+    getAllRentals,
+    getStats
 };

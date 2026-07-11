@@ -51,9 +51,28 @@ const getAllRentals = async () => {
     });
 };
 
+const getSystemStats = async () => {
+    const totalUsers = await prisma.user.count();
+    const totalGears = await prisma.gearItem.count();
+    const totalOrders = await prisma.rentalOrder.count();
+
+    const revenue = await prisma.payment.aggregate({
+        where: { status: 'COMPLETED' },
+        _sum: { amount: true }
+    });
+
+    return {
+        totalUsers,
+        totalGears,
+        totalOrders,
+        totalRevenue: revenue._sum.amount || 0
+    };
+};
+
 export const AdminService = {
     getAllUsers,
     updateUserStatus,
     getAllGear,
-    getAllRentals
+    getAllRentals,
+    getSystemStats
 };
