@@ -23,6 +23,7 @@ router.post('/register', authController.registerUser)
 router.post('/login', authController.loginUser)
 router.get('/me', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), authController.getMyProfile)
 router.patch('/me', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), authController.updateMyProfile);
-
+// update password
+router.patch('/change-password', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), authController.changePassword);
 
 export const authRoutes = router

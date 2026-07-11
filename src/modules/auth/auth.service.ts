@@ -102,7 +102,7 @@ const getMyProfileFromDB = async (id: string) => {
 };
 
 const updateMyProfileInDB = async (id: string, payload: any) => {
-    // সিকিউরিটি: ইউজার যেন চাইলেই সেনসিটিভ ডাটা আপডেট করতে না পারে
+
     const { password, role, status, email, ...updateData } = payload;
 
     const user = await prisma.user.findUnique({
@@ -129,9 +129,38 @@ const updateMyProfileInDB = async (id: string, payload: any) => {
     return updatedUser;
 };
 
+const changePasswordInDB = async (userId: string, payload: any) => {
+    const { oldPassword, newPassword } = payload;
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+
+    const isPasswordMatched = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isPasswordMatched) {
+        throw new Error("Incorrect old password");
+    }
+
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, Number(config.bcrypt_salt_rounds));
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: { passwordHash: hashedNewPassword }
+    });
+
+    return null;
+};
+
 export const authService = {
     loginUser,
     registerUserIntoDB,
     getMyProfileFromDB,
-    updateMyProfileInDB
+    updateMyProfileInDB,
+    changePasswordInDB
 }
