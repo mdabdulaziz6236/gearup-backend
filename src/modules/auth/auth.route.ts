@@ -25,5 +25,10 @@ router.get('/me', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), au
 router.patch('/me', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), authController.updateMyProfile);
 // update password
 router.patch('/change-password', auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.PROVIDER), authController.changePassword);
+// logout user
+router.post('/logout', authController.logoutUser);
+
+
+
 
 export const authRoutes = router
