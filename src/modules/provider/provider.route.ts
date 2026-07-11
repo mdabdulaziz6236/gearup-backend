@@ -15,8 +15,8 @@ router.delete('/gear/:id', ProviderController.deleteGear);
 // Order Management
 router.get('/orders', ProviderController.getIncomingOrders);
 router.patch('/orders/:id', ProviderController.updateOrderStatus);
-
-
+// provider dashboard stats
+router.get('/dashboard-stats', ProviderController.getDashboardStats);
 
 
 export const ProviderRoutes = router;

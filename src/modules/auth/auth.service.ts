@@ -6,8 +6,14 @@ import { jwtUtils } from "../../../jwt";
 import { SignOptions } from "jsonwebtoken";
 
 const registerUserIntoDB = async (payload: RegisterUserPayload) => {
-    const { fullName, email, password, role } = payload;
+    let { fullName, email, password, role } = payload;
+    if (role === 'ADMIN') {
+        throw new Error("Security Alert: You cannot register as an Admin!");
+    }
 
+    if (!role) {
+        role = 'CUSTOMER';
+    }
     const isUserExists = await prisma.user.findUnique({
         where: { email }
     });

@@ -89,10 +89,70 @@ const updateOrderStatus = async (orderId: string, providerId: string, status: Or
         data: { status }
     });
 };
+
+const getProviderStats = async (providerId: string) => {
+
+    const totalGears = await prisma.gearItem.count({
+        where: { providerId }
+    });
+
+
+    const totalOrders = await prisma.rentalOrder.count({
+        where: {
+            gear: { providerId }
+        }
+    });
+
+
+    const totalPaidOrders = await prisma.rentalOrder.count({
+        where: {
+            gear: { providerId },
+            status: {
+                in: ['PAID', 'PICKED_UP', 'RETURNED', 'COMPLETED']
+            }
+        }
+    });
+
+    const revenue = await prisma.payment.aggregate({
+        where: { 
+            status: 'COMPLETED',
+            rentalOrder: {
+                gear: { providerId }
+            }
+        },
+        _sum: { amount: true }
+    });
+
+
+    const recentPaidOrders = await prisma.rentalOrder.findMany({
+        where: {
+            gear: { providerId },
+            status: {
+                in: ['PAID', 'PICKED_UP', 'RETURNED', 'COMPLETED']
+            }
+        },
+        include: {
+            gear: { select: { title: true, dailyPrice: true } },
+            customer: { select: { fullName: true, email: true } },
+            payment: { select: { amount: true, transactionId: true } }
+        },
+        orderBy: { createdAt: 'desc' }
+    });
+
+    return {
+        totalGears,
+        totalOrders,
+        totalPaidOrders,
+        totalRevenue: revenue._sum.amount || 0,
+        recentPaidOrders
+    };
+};
+
 export const ProviderService = {
     addGear,
     updateGear,
     deleteGear,
     getIncomingOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    getProviderStats
 }

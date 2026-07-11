@@ -39,8 +39,8 @@ const createPaymentIntent = async (customerId: string, rentalOrderId: string) =>
         ],
         mode: "payment",
 
-        success_url: `${config.app_url}/payment=successful`,
-        cancel_url: `${config.app_url}/payment=cancelled`,
+        success_url: `${config.payment_success_url}?transactionId={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${config.payment_cancel_url}`,
     });
 
 
