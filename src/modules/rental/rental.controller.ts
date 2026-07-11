@@ -40,8 +40,23 @@ const getRentalOrderById = catchAsync(async (req: Request, res: Response, next: 
     });
 });
 
+const updateStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const result = await RentalService.updateOrderStatus(id as string, status);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Order status updated successfully",
+        data: result
+    });
+});
+
 export const RentalController = {
     createRentalOrder,
     getCustomerOrders,
-    getRentalOrderById
+    getRentalOrderById,
+    updateStatus
 };

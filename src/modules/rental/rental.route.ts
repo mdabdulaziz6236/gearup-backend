@@ -12,4 +12,6 @@ router.post('/', RentalController.createRentalOrder);
 router.get('/', RentalController.getCustomerOrders);
 router.get('/:id', RentalController.getRentalOrderById);
 
+router.patch('/:id/status', auth(UserRole.ADMIN, UserRole.PROVIDER), RentalController.updateStatus);
+
 export const RentalRoutes = router;

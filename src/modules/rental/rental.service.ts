@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 const createRentalOrder = async (customerId: string, payload: any) => {
@@ -68,8 +69,28 @@ const getRentalOrderById = async (orderId: string, customerId: string) => {
     return order;
 };
 
+
+const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+
+    const existingOrder = await prisma.rentalOrder.findUnique({
+        where: { id: orderId }
+    });
+
+    if (!existingOrder) {
+        throw new Error("Rental order not found!");
+    }
+
+    const updatedOrder = await prisma.rentalOrder.update({
+        where: { id: orderId },
+        data: { status }
+    });
+
+    return updatedOrder;
+};
+
 export const RentalService = { 
     createRentalOrder, 
     getCustomerOrders, 
-    getRentalOrderById 
+    getRentalOrderById ,
+    updateOrderStatus
 };
