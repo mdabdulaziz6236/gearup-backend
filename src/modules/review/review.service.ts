@@ -40,4 +40,23 @@ const createReview = async (customerId: string, payload: any) => {
     return review;
 };
 
-export const ReviewService = { createReview };
+
+const getReviewsByGearId = async (gearId: string) => {
+
+    const reviews = await prisma.review.findMany({
+        where: { gearId },
+        include: {
+            customer: {
+                select: { fullName: true }
+            }
+        },
+        orderBy: { createdAt: "desc" }
+    });
+
+    return reviews;
+};
+
+export const ReviewService = {
+    createReview,
+    getReviewsByGearId
+};
