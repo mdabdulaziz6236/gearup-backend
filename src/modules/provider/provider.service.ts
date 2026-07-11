@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 
@@ -53,8 +54,45 @@ const deleteGear = async (gearId: string, providerId: string) => {
     });
 };
 
+const getIncomingOrders = async (providerId: string) => {
 
-
-export const ProviderService = {
-    addGear, updateGear, deleteGear
+    return await prisma.rentalOrder.findMany({
+        where: {
+            gear: {
+                providerId: providerId
+            }
+        },
+        include: {
+            gear: true,
+            customer: {
+                select: { id: true, fullName: true, email: true }
+            },
+            payment: true
+        },
+        orderBy: { createdAt: 'desc' }
+    });
 };
+
+const updateOrderStatus = async (orderId: string, providerId: string, status: OrderStatus) => {
+
+    const order = await prisma.rentalOrder.findUniqueOrThrow({
+        where: { id: orderId },
+        include: { gear: true }
+    });
+
+    if (order.gear.providerId !== providerId) {
+        throw new Error("You are not authorized to update this order's status!");
+    }
+
+    return await prisma.rentalOrder.update({
+        where: { id: orderId },
+        data: { status }
+    });
+};
+export const ProviderService = {
+    addGear,
+    updateGear,
+    deleteGear,
+    getIncomingOrders,
+    updateOrderStatus
+}

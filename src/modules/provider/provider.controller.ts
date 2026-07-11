@@ -4,6 +4,7 @@ import { ProviderService } from "./provider.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import { OrderStatus } from "../../../generated/prisma/enums";
 
 const addGear = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const providerId = (req as any).user.id;
@@ -44,8 +45,38 @@ const deleteGear = catchAsync(async (req: Request, res: Response, next: NextFunc
 });
 
 
+const getIncomingOrders = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const providerId = (req as any).user.id;
+    const result = await ProviderService.getIncomingOrders(providerId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Incoming orders retrieved successfully",
+        data: result
+    });
+});
+
+const updateOrderStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const providerId = (req as any).user.id;
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const result = await ProviderService.updateOrderStatus(id as string, providerId, status as OrderStatus);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Order status updated successfully",
+        data: result
+    });
+});
 
 
 export const ProviderController = {
-    addGear, updateGear, deleteGear,
+    addGear,
+    updateGear,
+    deleteGear,
+    getIncomingOrders,
+    updateOrderStatus
 };
