@@ -101,8 +101,37 @@ const getMyProfileFromDB = async (id: string) => {
     return user;
 };
 
+const updateMyProfileInDB = async (id: string, payload: any) => {
+    // সিকিউরিটি: ইউজার যেন চাইলেই সেনসিটিভ ডাটা আপডেট করতে না পারে
+    const { password, role, status, email, ...updateData } = payload;
+
+    const user = await prisma.user.findUnique({
+        where: { id }
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const updatedUser = await prisma.user.update({
+        where: { id },
+        data: updateData,
+        select: {
+            id: true,
+            fullName: true,
+            email: true,
+            role: true,
+            status: true,
+            updatedAt: true
+        }
+    });
+
+    return updatedUser;
+};
+
 export const authService = {
     loginUser,
     registerUserIntoDB,
-    getMyProfileFromDB
+    getMyProfileFromDB,
+    updateMyProfileInDB
 }

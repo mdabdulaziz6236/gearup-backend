@@ -28,11 +28,11 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: false, 
+        secure: false,
         sameSite: 'none',
         maxAge: 1000 * 60 * 60 * 24 // 1 day
     });
-    
+
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,
@@ -60,9 +60,24 @@ const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 });
 
+const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const payload = req.body;
+
+    const updatedProfile = await authService.updateMyProfileInDB(user?.id as string, payload);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Profile updated successfully",
+        data: updatedProfile
+    });
+});
+
 export const authController = {
     loginUser,
     registerUser,
-    getMyProfile
+    getMyProfile,
+    updateMyProfile
 }
 
