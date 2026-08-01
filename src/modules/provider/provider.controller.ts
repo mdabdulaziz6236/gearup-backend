@@ -86,11 +86,24 @@ const getDashboardStats = catchAsync(async (req: Request, res: Response, next: N
     });
 });
 
+const getMyGears = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const providerId = (req as any).user.id;
+    const result = await ProviderService.getMyGears(providerId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Gear retrieved successfully",
+        data: result
+    });
+});
+
 export const ProviderController = {
     addGear,
     updateGear,
     deleteGear,
     getIncomingOrders,
     updateOrderStatus,
-    getDashboardStats
+    getDashboardStats,
+    getMyGears
 };

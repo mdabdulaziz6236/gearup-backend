@@ -148,11 +148,21 @@ const getProviderStats = async (providerId: string) => {
     };
 };
 
+const getMyGears = async(providerId: string)=>{
+    const gears = await prisma.gearItem.findMany({
+        where:{
+            providerId
+        }
+    })
+    return gears
+}
+
 export const ProviderService = {
     addGear,
     updateGear,
     deleteGear,
     getIncomingOrders,
     updateOrderStatus,
-    getProviderStats
+    getProviderStats,
+    getMyGears
 }

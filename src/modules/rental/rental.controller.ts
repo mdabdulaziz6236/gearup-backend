@@ -43,7 +43,6 @@ const getRentalOrderById = catchAsync(async (req: Request, res: Response, next: 
 const updateStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { status } = req.body;
-
     const result = await RentalService.updateOrderStatus(id as string, status);
 
     sendResponse(res, {

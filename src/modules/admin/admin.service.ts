@@ -69,10 +69,17 @@ const getSystemStats = async () => {
     };
 };
 
+const deleteUser = async (userId: string,) => {
+    return await prisma.user.delete({
+        where: { id: userId }
+    });
+};
+
 export const AdminService = {
     getAllUsers,
     updateUserStatus,
     getAllGear,
     getAllRentals,
-    getSystemStats
+    getSystemStats,
+    deleteUser
 };

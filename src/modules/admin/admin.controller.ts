@@ -57,10 +57,22 @@ const getStats = catchAsync(async (req: Request, res: Response, next: NextFuncti
     });
 });
 
+const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    await AdminService.deleteUser(req.params.id as string);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "User status updated successfully",
+        data: null
+    });
+});
+
+
 export const AdminController = {
     getAllUsers,
     updateUserStatus,
     getAllGear,
     getAllRentals,
-    getStats
+    getStats,
+    deleteUser
 };

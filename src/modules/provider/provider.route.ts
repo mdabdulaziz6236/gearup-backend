@@ -17,6 +17,8 @@ router.get('/orders', ProviderController.getIncomingOrders);
 router.patch('/orders/:id', ProviderController.updateOrderStatus);
 // provider dashboard stats
 router.get('/dashboard-stats', ProviderController.getDashboardStats);
+// provider all gears
+router.get('/my-gears', ProviderController.getMyGears);
 
 
 export const ProviderRoutes = router;
