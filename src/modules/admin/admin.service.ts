@@ -75,11 +75,33 @@ const deleteUser = async (userId: string,) => {
     });
 };
 
+const getGearById = async (id: string) => {
+    const result = await prisma.gearItem.findUniqueOrThrow({
+        where: { id },
+        include: {
+            category: true,
+            provider: { select: { id: true, fullName: true, email: true } }
+        }
+    });
+
+    return result;
+};
+
+const deleteGearById = async (id: string) => {
+    const result = await prisma.gearItem.delete({
+        where: { id },
+    });
+
+    return result;
+};
+
 export const AdminService = {
     getAllUsers,
     updateUserStatus,
     getAllGear,
     getAllRentals,
     getSystemStats,
-    deleteUser
+    deleteUser,
+    getGearById,
+    deleteGearById
 };

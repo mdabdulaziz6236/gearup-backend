@@ -67,6 +67,29 @@ const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     });
 });
 
+const getGearById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await AdminService.getGearById(id as string);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Gear details retrieved successfully",
+        data: result
+    });
+});
+
+const deleteGearById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    await AdminService.deleteGearById(id as string);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Gear deleted successfully",
+        data: null
+    });
+});
+
+
 
 export const AdminController = {
     getAllUsers,
@@ -74,5 +97,7 @@ export const AdminController = {
     getAllGear,
     getAllRentals,
     getStats,
-    deleteUser
+    deleteUser,
+    getGearById,
+    deleteGearById
 };
