@@ -18,6 +18,20 @@ const createReview = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 });
 
+const getMyReviews = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const customerId = (req as any).user.id;
+
+
+    const result = await ReviewService.getMyReviews(customerId as string);
+
+    res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Reviews retrieved successfully",
+        data: result
+    });
+});
+
 const getReviewsByGear = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { gearId } = req.params;
 
@@ -35,5 +49,6 @@ const getReviewsByGear = catchAsync(async (req: Request, res: Response, next: Ne
 
 export const ReviewController = {
     createReview,
-    getReviewsByGear
+    getReviewsByGear,
+    getMyReviews
 };

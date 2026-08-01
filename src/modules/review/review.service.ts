@@ -56,7 +56,21 @@ const getReviewsByGearId = async (gearId: string) => {
     return reviews;
 };
 
+const getMyReviews = async (customerId: string)=>{
+const reviews = await prisma.review.findMany({
+    where:{
+        customerId
+    },
+    orderBy:{
+        createdAt:'desc'
+    }
+})
+return reviews
+}
+
+
 export const ReviewService = {
     createReview,
-    getReviewsByGearId
+    getReviewsByGearId,
+    getMyReviews
 };

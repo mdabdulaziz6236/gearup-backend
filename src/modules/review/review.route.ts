@@ -6,6 +6,7 @@ import { UserRole } from '../../../generated/prisma/enums';
 const router = express.Router();
 
 router.post('/', auth(UserRole.CUSTOMER), ReviewController.createReview);
+router.get('/', auth(UserRole.CUSTOMER), ReviewController.getMyReviews);
 router.get('/:gearId', ReviewController.getReviewsByGear);
 
 
