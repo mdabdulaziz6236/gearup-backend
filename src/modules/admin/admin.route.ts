@@ -17,4 +17,5 @@ router.get('/gear/:id', AdminController.getGearById);
 router.delete('/gear/:id', AdminController.deleteGearById);
 router.get('/rentals', AdminController.getAllRentals);
 router.get('/stats', AdminController.getStats);
+router.get('/payments', AdminController.getPayments);
 export const AdminRoutes = router;

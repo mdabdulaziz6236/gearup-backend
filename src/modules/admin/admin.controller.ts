@@ -89,6 +89,17 @@ const deleteGearById = catchAsync(async (req: Request, res: Response, next: Next
     });
 });
 
+const getPayments = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AdminService.getPayments();
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Admin all payment data retrieved successfully",
+        data: result
+    });
+});
+
 
 
 export const AdminController = {
@@ -99,5 +110,6 @@ export const AdminController = {
     getStats,
     deleteUser,
     getGearById,
-    deleteGearById
+    deleteGearById,
+    getPayments
 };
