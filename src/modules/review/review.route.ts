@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/', auth(UserRole.CUSTOMER), ReviewController.createReview);
 router.get('/', auth(UserRole.CUSTOMER), ReviewController.getMyReviews);
+router.get('/all',  ReviewController.getAllReviews);
 router.get('/:gearId', ReviewController.getReviewsByGear);
 
 

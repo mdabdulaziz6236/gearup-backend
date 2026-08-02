@@ -1,76 +1,100 @@
 import { prisma } from "../../lib/prisma";
 
 const createReview = async (customerId: string, payload: any) => {
-    const { gearId, rating, comment } = payload;
+  const { gearId, rating, comment } = payload;
 
+  const previousRental = await prisma.rentalOrder.findFirst({
+    where: {
+      customerId,
+      gearId,
+      status: {
+        in: ["PAID", "RETURNED", "COMPLETED"],
+      },
+    },
+  });
 
-    const previousRental = await prisma.rentalOrder.findFirst({
-        where: {
-            customerId,
-            gearId,
-            status: {
-                in: ["PAID", "RETURNED", "COMPLETED"]
-            }
-        }
-    });
+  if (!previousRental) {
+    throw new Error(
+      "You can only review gears that you have successfully rented and returned.",
+    );
+  }
 
-    if (!previousRental) {
-        throw new Error("You can only review gears that you have successfully rented and returned.");
-    }
+  const review = await prisma.review.create({
+    data: {
+      customerId,
+      gearId,
+      rating,
+      comment,
+      rentalOrderId: previousRental.id,
+    },
+    include: {
+      customer: {
+        select: { fullName: true, email: true },
+      },
+      gear: {
+        select: { title: true },
+      },
+    },
+  });
 
-
-    const review = await prisma.review.create({
-        data: {
-            customerId,
-            gearId,
-            rating,
-            comment,
-            rentalOrderId: previousRental.id
-        },
-        include: {
-            customer: {
-                select: { fullName: true, email: true }
-            },
-            gear: {
-                select: { title: true }
-            }
-        }
-    });
-
-    return review;
+  return review;
 };
-
 
 const getReviewsByGearId = async (gearId: string) => {
+  const reviews = await prisma.review.findMany({
+    where: { gearId },
+    include: {
+      customer: {
+        select: { fullName: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
-    const reviews = await prisma.review.findMany({
-        where: { gearId },
-        include: {
-            customer: {
-                select: { fullName: true }
-            }
-        },
-        orderBy: { createdAt: "desc" }
-    });
-
-    return reviews;
+  return reviews;
 };
 
-const getMyReviews = async (customerId: string)=>{
-const reviews = await prisma.review.findMany({
-    where:{
-        customerId
+const getMyReviews = async (customerId: string) => {
+  const reviews = await prisma.review.findMany({
+    where: {
+      customerId,
     },
-    orderBy:{
-        createdAt:'desc'
-    }
-})
-return reviews
-}
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return reviews;
+};
+const getAllReviews = async () => {
+  const reviews = await prisma.review.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+      customer: {
+        select: {
+          fullName: true
+        },
+      },
+      gear: {
+        select: {
+         title:true,
+         brand:true
+        },
+      },
+    },
+  });
 
+  return reviews;
+};
 
 export const ReviewService = {
-    createReview,
-    getReviewsByGearId,
-    getMyReviews
+  createReview,
+  getReviewsByGearId,
+  getMyReviews,
+  getAllReviews
 };

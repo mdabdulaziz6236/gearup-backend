@@ -45,10 +45,22 @@ const getReviewsByGear = catchAsync(async (req: Request, res: Response, next: Ne
     });
 });
 
+const getAllReviews = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const result = await ReviewService.getAllReviews();
+
+    res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Reviews retrieved successfully",
+        data: result
+    });
+});
 
 
 export const ReviewController = {
     createReview,
     getReviewsByGear,
-    getMyReviews
+    getMyReviews,
+    getAllReviews
 };
